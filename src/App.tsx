@@ -26,8 +26,13 @@ import {
   Phone,
   MapPin,
   Quote,
-  Star
+  Star,
+  MessageSquare,
+  Bot,
+  Send,
+  Loader2
 } from 'lucide-react';
+import { GoogleGenAI } from "@google/genai";
 
 // --- Components ---
 
@@ -548,6 +553,138 @@ const ContactSection = () => {
   );
 };
 
+const Chatbot = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: 'user' | 'bot', text: string }[]>([
+    { role: 'bot', text: "Hello! I'm the Aegis AI Assistant. How can I help you with your health and safety AI needs today?" }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: userMessage,
+        config: {
+          systemInstruction: `You are the Aegis AI Assistant, an expert in AI-driven health and safety solutions. 
+          Your goal is to help users understand Aegis AI & Safety's services and AI implementation strategies.
+          
+          Key Knowledge:
+          - Services: H&S Applications (Incident Reporting, Compliance Tracking, Audit Automation), AI Implementation (Computer Vision, Predictive Analytics, NLP), Lifecycle Management (Strategy, Design, Deployment, Optimization).
+          - Research: Rooted in IEEE research (IEEE 7000, 7001, 2846) for transparency and ethical AI.
+          - Industry Focus: Mining, Construction, Logistics, and Healthcare.
+          - Tone: Professional, authoritative, helpful, and safety-focused.
+          - Location: Based in Sudbury, Ontario, Canada.
+          
+          Always prioritize safety and ethical AI implementation in your answers. If you don't know something specific about a user's company, offer to connect them with a human safety expert via the contact form.`
+        }
+      });
+
+      const botResponse = response.text || "I'm sorry, I couldn't process that request. Please try again or contact our team.";
+      setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
+    } catch (error) {
+      console.error("Chatbot Error:", error);
+      setMessages(prev => [...prev, { role: 'bot', text: "I'm having trouble connecting right now. Please try again later." }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-[60]">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="absolute bottom-20 right-0 w-[350px] md:w-[400px] h-[500px] bg-white rounded-[32px] shadow-2xl border border-slate-100 flex flex-col overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
+                  <Bot size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold">Aegis AI Assistant</h4>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                    <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Online</span>
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${
+                    msg.role === 'user' 
+                      ? 'bg-emerald-600 text-white rounded-tr-none shadow-md shadow-emerald-100' 
+                      : 'bg-white text-slate-700 rounded-tl-none border border-slate-100 shadow-sm'
+                  }`}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm flex items-center gap-2">
+                    <Loader2 size={16} className="animate-spin text-emerald-600" />
+                    <span className="text-xs text-slate-400 font-medium">Assistant is thinking...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input */}
+            <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100 flex gap-2">
+              <input 
+                type="text" 
+                placeholder="Ask about our services..."
+                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-sm"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 transition-all disabled:opacity-50"
+              >
+                <Send size={18} />
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-2xl transition-all hover:scale-110 active:scale-95 ${
+          isOpen ? 'bg-slate-900' : 'bg-emerald-600'
+        }`}
+      >
+        {isOpen ? <X size={28} /> : <MessageSquare size={28} />}
+      </button>
+    </div>
+  );
+};
+
 const Footer = () => {
   return (
     <footer className="bg-slate-900 text-white pt-20 pb-10">
@@ -681,6 +818,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <Chatbot />
     </div>
   );
 }
