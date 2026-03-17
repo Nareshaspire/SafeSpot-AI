@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Shield, 
@@ -30,11 +30,28 @@ import {
   MessageSquare,
   Bot,
   Send,
-  Loader2
+  Loader2,
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
+// --- Lazy Loaded Sections ---
+const Services = lazy(() => import('./sections/Services'));
+const Lifecycle = lazy(() => import('./sections/Lifecycle'));
+const ResearchSection = lazy(() => import('./sections/ResearchSection'));
+const PPESection = lazy(() => import('./sections/PPESection'));
+
 // --- Components ---
+
+const SectionLoading = () => (
+  <div className="py-24 flex items-center justify-center bg-slate-50">
+    <div className="flex flex-col items-center gap-4">
+      <Loader2 className="animate-spin text-emerald-600" size={40} />
+      <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Loading Section...</p>
+    </div>
+  </div>
+);
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -265,147 +282,6 @@ const SocialProof = () => {
   );
 };
 
-const Services = () => {
-  const services = [
-    {
-      icon: <Shield className="text-emerald-600" size={32} />,
-      title: "H&S Applications",
-      desc: "Custom-built health and safety software tailored for construction, manufacturing, and healthcare.",
-      features: ["Incident Reporting", "Compliance Tracking", "Audit Automation"]
-    },
-    {
-      icon: <Cpu className="text-indigo-600" size={32} />,
-      title: "AI Implementation",
-      desc: "Strategic integration of machine learning and computer vision into your existing workflows.",
-      features: ["Computer Vision", "Predictive Analytics", "NLP Documentation"]
-    },
-    {
-      icon: <Layers className="text-amber-600" size={32} />,
-      title: "Lifecycle Management",
-      desc: "End-to-end support from initial AI feasibility studies to long-term model maintenance.",
-      features: ["Strategy & Design", "Deployment", "Optimization"]
-    }
-  ];
-
-  return (
-    <section id="services" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-4xl font-bold mb-4">Our Core Expertise</h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">We bridge the gap between traditional safety protocols and cutting-edge artificial intelligence.</p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {services.map((s, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -10 }}
-              className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-emerald-200 hover:shadow-xl transition-all"
-            >
-              <div className="mb-6">{s.icon}</div>
-              <h3 className="text-2xl font-bold mb-4">{s.title}</h3>
-              <p className="text-slate-600 mb-8 leading-relaxed">{s.desc}</p>
-              <ul className="space-y-3">
-                {s.features.map((f, fi) => (
-                  <li key={fi} className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                    <CheckCircle2 size={16} className="text-emerald-500" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Lifecycle = () => {
-  const steps = [
-    { title: "Discovery", desc: "Identifying safety gaps and AI opportunities through deep industry analysis." },
-    { title: "Architecture", desc: "Designing robust, scalable AI systems based on IEEE research standards." },
-    { title: "Integration", desc: "Seamlessly embedding AI models into your existing H&S applications." },
-    { title: "Deployment", desc: "Controlled rollouts with real-time performance monitoring and feedback." },
-    { title: "Evolution", desc: "Continuous learning and model refinement to adapt to new safety challenges." }
-  ];
-
-  return (
-    <section id="ai-lifecycle" className="py-24 bg-slate-900 text-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 relative">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
-        
-        <div className="mb-16">
-          <h2 className="font-display text-4xl font-bold mb-4">Full-Lifecycle AI Integration</h2>
-          <p className="text-slate-400 max-w-2xl">We don't just build apps; we engineer intelligent ecosystems that grow with your organization.</p>
-        </div>
-
-        <div className="relative">
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-slate-800 -translate-y-1/2 z-0" />
-          
-          <div className="grid lg:grid-cols-5 gap-8 relative z-10">
-            {steps.map((step, i) => (
-              <div key={i} className="group">
-                <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center font-bold text-xl mb-6 group-hover:bg-emerald-600 group-hover:border-emerald-500 transition-all">
-                  {i + 1}
-                </div>
-                <h4 className="text-xl font-bold mb-3 group-hover:text-emerald-400 transition-colors">{step.title}</h4>
-                <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const ResearchSection = () => {
-  return (
-    <section id="research" className="py-24 bg-emerald-50">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row gap-16 items-center">
-        <div className="lg:w-1/2">
-          <div className="w-16 h-16 bg-white rounded-2xl shadow-md flex items-center justify-center text-emerald-600 mb-8">
-            <BookOpen size={32} />
-          </div>
-          <h2 className="font-display text-4xl font-bold mb-6">IEEE Standardized AI Frameworks</h2>
-          <p className="text-lg text-slate-600 leading-relaxed mb-8">
-            Our methodology is rooted in the latest IEEE research on AI ethics and safety. We implement <strong>IEEE 7000™</strong> standards to ensure transparency, accountability, and ethical alignment in every health and safety application we build.
-          </p>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="p-4 bg-white rounded-xl shadow-sm">
-              <h5 className="font-bold text-slate-900 mb-1">IEEE 7001</h5>
-              <p className="text-xs text-slate-500">Transparency of Autonomous Systems</p>
-            </div>
-            <div className="p-4 bg-white rounded-xl shadow-sm">
-              <h5 className="font-bold text-slate-900 mb-1">IEEE 2846</h5>
-              <p className="text-xs text-slate-500">Assumptions in Safety-Related Models</p>
-            </div>
-          </div>
-        </div>
-        <div className="lg:w-1/2 grid grid-cols-2 gap-4">
-          <div className="space-y-4">
-            <div className="h-48 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            </div>
-            <div className="h-64 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            </div>
-          </div>
-          <div className="space-y-4 pt-8">
-            <div className="h-64 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            </div>
-            <div className="h-48 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
 const ContactSection = () => {
   const [formState, setFormState] = useState({ name: '', email: '', industry: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -556,25 +432,35 @@ const ContactSection = () => {
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'bot', text: string }[]>([
-    { role: 'bot', text: "Hello! I'm the Aegis AI Assistant. How can I help you with your health and safety AI needs today?" }
+    { role: 'bot', text: "Hello! I'm the Aegis AI Assistant. How can I help you with your health and safety AI needs today? Ask me about our Health & Safety applications, AI integration services, or our IEEE-standard research!" }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUserMessage, setLastUserMessage] = useState<string | null>(null);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const suggestions = [
+    "H&S Applications",
+    "AI Integration",
+    "IEEE Standards",
+    "Industry Focus"
+  ];
 
-    const userMessage = input.trim();
-    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
-    setInput('');
+  const handleSuggestionClick = async (suggestion: string) => {
+    if (isLoading) return;
+    const message = `Tell me more about ${suggestion}`;
+    setMessages(prev => [...prev, { role: 'user', text: message }]);
+    await sendMessage(message);
+  };
+
+  const sendMessage = async (messageText: string) => {
     setIsLoading(true);
-
+    setError(null);
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: userMessage,
+        contents: messageText,
         config: {
           systemInstruction: `You are the Aegis AI Assistant, an expert in AI-driven health and safety solutions. 
           Your goal is to help users understand Aegis AI & Safety's services and AI implementation strategies.
@@ -592,12 +478,29 @@ const Chatbot = () => {
 
       const botResponse = response.text || "I'm sorry, I couldn't process that request. Please try again or contact our team.";
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
-    } catch (error) {
-      console.error("Chatbot Error:", error);
-      setMessages(prev => [...prev, { role: 'bot', text: "I'm having trouble connecting right now. Please try again later." }]);
+      setLastUserMessage(null);
+    } catch (err: any) {
+      console.error("Chatbot Error:", err);
+      setError("I'm having trouble connecting to the AI service. This could be due to a network issue or API limits.");
+      setLastUserMessage(messageText);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+    setInput('');
+    await sendMessage(userMessage);
+  };
+
+  const handleRetry = async () => {
+    if (!lastUserMessage || isLoading) return;
+    await sendMessage(lastUserMessage);
   };
 
   return (
@@ -642,12 +545,44 @@ const Chatbot = () => {
                   </div>
                 </div>
               ))}
+              
+              {messages.length === 1 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSuggestionClick(s)}
+                      className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+              
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm flex items-center gap-2">
                     <Loader2 size={16} className="animate-spin text-emerald-600" />
                     <span className="text-xs text-slate-400 font-medium">Assistant is thinking...</span>
                   </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="flex flex-col items-center gap-3 p-4 bg-red-50 rounded-2xl border border-red-100">
+                  <div className="flex items-center gap-2 text-red-600">
+                    <AlertCircle size={18} />
+                    <span className="text-xs font-bold uppercase tracking-wider">Connection Error</span>
+                  </div>
+                  <p className="text-xs text-red-700 text-center leading-relaxed">{error}</p>
+                  <button 
+                    onClick={handleRetry}
+                    className="flex items-center gap-2 px-4 py-2 bg-white text-red-600 rounded-xl text-xs font-bold border border-red-200 hover:bg-red-50 transition-colors shadow-sm"
+                  >
+                    <RefreshCw size={14} />
+                    Retry Last Message
+                  </button>
                 </div>
               )}
             </div>
@@ -660,10 +595,11 @@ const Chatbot = () => {
                 className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-sm"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                disabled={isLoading}
               />
               <button 
                 type="submit" 
-                disabled={isLoading}
+                disabled={isLoading || !input.trim()}
                 className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 transition-all disabled:opacity-50"
               >
                 <Send size={18} />
@@ -781,11 +717,21 @@ export default function App() {
 
         <SocialProof />
 
-        <Services />
+        <Suspense fallback={<SectionLoading />}>
+          <Services />
+        </Suspense>
         
-        <Lifecycle />
+        <Suspense fallback={<SectionLoading />}>
+          <Lifecycle />
+        </Suspense>
         
-        <ResearchSection />
+        <Suspense fallback={<SectionLoading />}>
+          <PPESection />
+        </Suspense>
+        
+        <Suspense fallback={<SectionLoading />}>
+          <ResearchSection />
+        </Suspense>
 
         <ContactSection />
 
