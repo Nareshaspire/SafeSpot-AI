@@ -32,7 +32,9 @@ import {
   Send,
   Loader2,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -41,6 +43,8 @@ const Services = lazy(() => import('./sections/Services'));
 const Lifecycle = lazy(() => import('./sections/Lifecycle'));
 const ResearchSection = lazy(() => import('./sections/ResearchSection'));
 const PPESection = lazy(() => import('./sections/PPESection'));
+const RiskAssessmentSection = lazy(() => import('./sections/RiskAssessmentSection'));
+const TrainingSection = lazy(() => import('./sections/TrainingSection'));
 
 // --- Components ---
 
@@ -53,7 +57,7 @@ const SectionLoading = () => (
   </div>
 );
 
-const Navbar = () => {
+const Navbar = ({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggleDarkMode: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -70,25 +74,42 @@ const Navbar = () => {
           <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
             <Shield size={24} />
           </div>
-          <span className="font-display font-bold text-xl tracking-tight">AEGIS <span className="text-emerald-600">AI</span></span>
+          <span className="font-display font-bold text-xl tracking-tight dark:text-white">AEGIS <span className="text-emerald-600">AI</span></span>
         </div>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
-          {['Services', 'AI Lifecycle', 'Research', 'Contact'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">
+          {['Services', 'AI Lifecycle', 'Research', 'Risk Assessment', 'Training', 'Contact'].map((item) => (
+            <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
               {item}
             </a>
           ))}
-          <a href="#contact" className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-600 transition-all hover:shadow-lg hover:shadow-emerald-200">
+          
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
+            aria-label="Toggle Dark Mode"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+
+          <a href="#contact" className="bg-slate-900 dark:bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all hover:shadow-lg hover:shadow-emerald-200">
             Get Started
           </a>
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-slate-900" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button className="text-slate-900 dark:text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -98,10 +119,10 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 glass border-t border-slate-200 p-6 md:hidden flex flex-col gap-4 shadow-xl"
+            className="absolute top-full left-0 right-0 glass border-t border-slate-200 dark:border-slate-800 p-6 md:hidden flex flex-col gap-4 shadow-xl"
           >
-            {['Services', 'AI Lifecycle', 'Research', 'Contact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-lg font-medium text-slate-900" onClick={() => setIsMobileMenuOpen(false)}>
+            {['Services', 'AI Lifecycle', 'Research', 'Risk Assessment', 'Training', 'Contact'].map((item) => (
+              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-lg font-medium text-slate-900 dark:text-white" onClick={() => setIsMobileMenuOpen(false)}>
                 {item}
               </a>
             ))}
@@ -119,8 +140,8 @@ const Hero = () => {
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       {/* Background Accents */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-emerald-50 rounded-full blur-3xl -z-10 opacity-60" />
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-indigo-50 rounded-full blur-3xl -z-10 opacity-60" />
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl -z-10 opacity-60" />
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl -z-10 opacity-60" />
 
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
         <motion.div
@@ -128,33 +149,33 @@ const Hero = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6">
             <Zap size={14} />
             <span>Next-Gen Health & Safety</span>
           </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] mb-8">
+          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] mb-8 dark:text-white">
             Safety First. <br />
             <span className="text-gradient">AI Always.</span>
           </h1>
-          <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-xl">
+          <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-10 max-w-xl">
             We empower global organizations with intelligent health and safety applications. From predictive risk assessment to full-lifecycle AI integration, we build the future of workplace security.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all hover:shadow-xl hover:shadow-emerald-200 group">
+            <button className="bg-slate-900 dark:bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all hover:shadow-xl hover:shadow-emerald-200 group">
               Explore Solutions
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="bg-white text-slate-900 border border-slate-200 px-8 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+            <button className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 px-8 py-4 rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2">
               AI Consulting
             </button>
           </div>
           
           <div className="mt-12 flex items-center gap-6 grayscale opacity-60">
-            <div className="flex items-center gap-2 font-display font-bold text-slate-400">
+            <div className="flex items-center gap-2 font-display font-bold text-slate-400 dark:text-slate-500">
               <Globe size={20} />
               <span>GLOBAL REACH</span>
             </div>
-            <div className="flex items-center gap-2 font-display font-bold text-slate-400">
+            <div className="flex items-center gap-2 font-display font-bold text-slate-400 dark:text-slate-500">
               <Shield size={20} />
               <span>ISO CERTIFIED</span>
             </div>
@@ -167,7 +188,7 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative"
         >
-          <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
+          <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800">
             <img 
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000" 
               alt="Industrial AI Safety" 
@@ -204,79 +225,11 @@ const Hero = () => {
           >
             <div className="flex items-center gap-3 mb-2">
               <CheckCircle2 className="text-emerald-500" size={20} />
-              <span className="text-sm font-bold">Predictive Safety</span>
+              <span className="text-sm font-bold dark:text-white">Predictive Safety</span>
             </div>
-            <p className="text-xs text-slate-500">Reducing incidents by up to 40% <br />using IEEE-standard models.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Implementing IEEE-standard models <br />for proactive risk mitigation.</p>
           </motion.div>
         </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const SocialProof = () => {
-  const testimonials = [
-    {
-      quote: "Aegis AI transformed our site safety audits. We've seen a 35% reduction in near-miss incidents since implementing their training tracking platform.",
-      author: "Robert Chen",
-      role: "Director of Safety, Northern Mining Group",
-      avatar: "https://picsum.photos/seed/safety1/100/100"
-    },
-    {
-      quote: "The full-lifecycle AI integration was seamless. Their team understands the unique challenges of construction logistics like no one else.",
-      author: "Sarah Miller",
-      role: "Operations Manager, Ontario Build Corp",
-      avatar: "https://picsum.photos/seed/safety2/100/100"
-    }
-  ];
-
-  const logos = [
-    { name: "Global Mining", icon: <Activity size={24} /> },
-    { name: "Sudbury Logistics", icon: <Globe size={24} /> },
-    { name: "Ontario Build", icon: <Shield size={24} /> },
-    { name: "HealthSafe Systems", icon: <Activity size={24} /> },
-    { name: "EcoWaste Solutions", icon: <Zap size={24} /> }
-  ];
-
-  return (
-    <section className="py-24 bg-slate-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Logos */}
-        <div className="mb-20">
-          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-10">Trusted by Industry Leaders</p>
-          <div className="flex flex-wrap justify-center gap-12 md:gap-20 opacity-40 grayscale">
-            {logos.map((logo, i) => (
-              <div key={i} className="flex items-center gap-2 group cursor-default">
-                <div className="text-slate-900">{logo.icon}</div>
-                <span className="font-display font-bold text-lg tracking-tight text-slate-900">{logo.name.toUpperCase()}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Testimonials */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {testimonials.map((t, i) => (
-            <motion.div 
-              key={i}
-              whileHover={{ scale: 1.02 }}
-              className="glass p-10 rounded-[32px] border-slate-200 shadow-sm relative"
-            >
-              <Quote className="absolute top-8 right-8 text-emerald-100" size={48} />
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, i) => <Star key={i} size={16} className="fill-amber-400 text-amber-400" />)}
-              </div>
-              <p className="text-lg text-slate-700 leading-relaxed mb-8 italic">"{t.quote}"</p>
-              <div className="flex items-center gap-4">
-                <img src={t.avatar} alt={t.author} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md" referrerPolicy="no-referrer" />
-                <div>
-                  <h5 className="font-bold text-slate-900">{t.author}</h5>
-                  <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">{t.role}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -285,11 +238,45 @@ const SocialProof = () => {
 const ContactSection = () => {
   const [formState, setFormState] = useState({ name: '', email: '', industry: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const errors = {
+    name: formState.name.length > 0 && formState.name.length < 2,
+    email: formState.email.length > 0 && !validateEmail(formState.email),
+    message: formState.message.length > 0 && formState.message.length < 10,
+    industry: false // Select usually doesn't need real-time "typing" validation in the same way
+  };
+
+  const isFormValid = 
+    formState.name.length >= 2 && 
+    validateEmail(formState.email) && 
+    formState.industry !== '' && 
+    formState.message.length >= 10;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFormValid) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     setIsSubmitted(true);
+    setIsSubmitting(false);
+    setFormState({ name: '', email: '', industry: '', message: '' });
     setTimeout(() => setIsSubmitted(false), 5000);
+  };
+
+  const getInputClass = (fieldName: keyof typeof errors, value: string) => {
+    const base = "w-full px-4 py-3 rounded-xl border outline-none transition-all ";
+    if (value.length === 0) return base + "border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200";
+    if (errors[fieldName]) return base + "border-red-500 ring-2 ring-red-100 bg-red-50";
+    return base + "border-emerald-500 ring-2 ring-emerald-100 bg-emerald-50/30";
   };
 
   return (
@@ -348,58 +335,115 @@ const ContactSection = () => {
                 >
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-                      <input 
-                        required
-                        type="text" 
-                        placeholder="John Doe"
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                        value={formState.name}
-                        onChange={(e) => setFormState({...formState, name: e.target.value})}
-                      />
+                      <div className="flex justify-between items-center">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+                        {errors.name && <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Too Short</span>}
+                      </div>
+                      <div className="relative">
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="John Doe"
+                          className={getInputClass('name', formState.name)}
+                          value={formState.name}
+                          onChange={(e) => setFormState({...formState, name: e.target.value})}
+                        />
+                        {formState.name.length >= 2 && <CheckCircle2 size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500" />}
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-                      <input 
-                        required
-                        type="email" 
-                        placeholder="john@company.com"
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                        value={formState.email}
-                        onChange={(e) => setFormState({...formState, email: e.target.value})}
-                      />
+                      <div className="flex justify-between items-center">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+                        {errors.email && <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Invalid Email</span>}
+                      </div>
+                      <div className="relative">
+                        <input 
+                          required
+                          type="email" 
+                          placeholder="john@company.com"
+                          className={getInputClass('email', formState.email)}
+                          value={formState.email}
+                          onChange={(e) => setFormState({...formState, email: e.target.value})}
+                        />
+                        {validateEmail(formState.email) && <CheckCircle2 size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500" />}
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 ml-1">Industry</label>
-                    <select 
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all appearance-none bg-white"
-                      value={formState.industry}
-                      onChange={(e) => setFormState({...formState, industry: e.target.value})}
-                    >
-                      <option value="">Select Industry</option>
-                      <option value="mining">Mining</option>
-                      <option value="construction">Construction</option>
-                      <option value="logistics">Logistics</option>
-                      <option value="healthcare">Healthcare</option>
-                      <option value="other">Other</option>
-                    </select>
+                    <div className="relative">
+                      <select 
+                        required
+                        className={`w-full px-4 py-3 rounded-xl border outline-none transition-all appearance-none bg-white ${formState.industry ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200'}`}
+                        value={formState.industry}
+                        onChange={(e) => setFormState({...formState, industry: e.target.value})}
+                      >
+                        <option value="">Select Industry</option>
+                        <option value="mining">Mining</option>
+                        <option value="construction">Construction</option>
+                        <option value="logistics">Logistics</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2">
+                        {formState.industry && <CheckCircle2 size={16} className="text-emerald-500" />}
+                        <ChevronRight className="rotate-90 text-slate-400" size={16} />
+                      </div>
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Message</label>
-                    <textarea 
-                      required
-                      rows={4}
-                      placeholder="How can we help you?"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all resize-none"
-                      value={formState.message}
-                      onChange={(e) => setFormState({...formState, message: e.target.value})}
-                    />
+                    <div className="flex justify-between items-center">
+                      <label className="text-sm font-bold text-slate-700 ml-1">Message</label>
+                      {errors.message && <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Min 10 characters</span>}
+                    </div>
+                    <div className="relative">
+                      <textarea 
+                        required
+                        rows={4}
+                        placeholder="How can we help you?"
+                        className={getInputClass('message', formState.message)}
+                        value={formState.message}
+                        onChange={(e) => setFormState({...formState, message: e.target.value})}
+                      />
+                      {formState.message.length >= 10 && <CheckCircle2 size={16} className="absolute right-4 bottom-4 text-emerald-500" />}
+                    </div>
                   </div>
-                  <button type="submit" className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-2 group">
-                    Send Inquiry
-                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  <motion.button 
+                    type="submit" 
+                    disabled={isSubmitting || !isFormValid}
+                    whileTap={isFormValid ? { scale: 0.98 } : {}}
+                    className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 group relative overflow-hidden ${
+                      isFormValid 
+                        ? 'bg-slate-900 text-white hover:bg-emerald-600 shadow-slate-200' 
+                        : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
+                    }`}
+                  >
+                    <AnimatePresence mode="wait">
+                      {isSubmitting ? (
+                        <motion.div
+                          key="loading"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="flex items-center gap-2"
+                        >
+                          <Loader2 size={20} className="animate-spin" />
+                          <span>Processing...</span>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="default"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="flex items-center gap-2"
+                        >
+                          <span>Send Inquiry</span>
+                          <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
                 </motion.form>
               ) : (
                 <motion.div 
@@ -442,6 +486,8 @@ const Chatbot = () => {
   const suggestions = [
     "H&S Applications",
     "AI Integration",
+    "Risk Assessment",
+    "Safety Training",
     "IEEE Standards",
     "Industry Focus"
   ];
@@ -467,6 +513,8 @@ const Chatbot = () => {
           
           Key Knowledge:
           - Services: H&S Applications (Incident Reporting, Compliance Tracking, Audit Automation), AI Implementation (Computer Vision, Predictive Analytics, NLP), Lifecycle Management (Strategy, Design, Deployment, Optimization).
+          - New Feature: AI-Driven Risk Assessment (Predictive analysis of hazards and mitigation strategies based on user input).
+          - New Feature: Personalized Safety Training (AI-generated training modules with interactive quizzes and progress tracking).
           - Research: Rooted in IEEE research (IEEE 7000, 7001, 2846) for transparency and ethical AI.
           - Industry Focus: Mining, Construction, Logistics, and Healthcare.
           - Tone: Professional, authoritative, helpful, and safety-focused.
@@ -623,7 +671,7 @@ const Chatbot = () => {
 
 const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-white pt-20 pb-10">
+    <footer className="bg-slate-900 dark:bg-slate-950 text-white pt-20 pb-10 border-t border-slate-800 dark:border-slate-900">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2">
@@ -638,7 +686,7 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               {['Twitter', 'LinkedIn', 'GitHub'].map(s => (
-                <a key={s} href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-emerald-600 transition-colors">
+                <a key={s} href="#" className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-900 flex items-center justify-center hover:bg-emerald-600 transition-colors">
                   <span className="sr-only">{s}</span>
                   <Activity size={18} />
                 </a>
@@ -651,6 +699,7 @@ const Footer = () => {
             <ul className="space-y-4 text-slate-400">
               <li><a href="#" className="hover:text-emerald-400 transition-colors">Industrial Safety</a></li>
               <li><a href="#" className="hover:text-emerald-400 transition-colors">Healthcare Apps</a></li>
+              <li><a href="#risk-assessment" className="hover:text-emerald-400 transition-colors">Risk Assessment</a></li>
               <li><a href="#" className="hover:text-emerald-400 transition-colors">AI Consulting</a></li>
               <li><a href="#" className="hover:text-emerald-400 transition-colors">Lifecycle Services</a></li>
             </ul>
@@ -661,13 +710,15 @@ const Footer = () => {
             <ul className="space-y-4 text-slate-400">
               <li><a href="#" className="hover:text-emerald-400 transition-colors">About Us</a></li>
               <li><a href="#research" className="hover:text-emerald-400 transition-colors">Research</a></li>
+              <li><a href="#risk-assessment" className="hover:text-emerald-400 transition-colors">Risk Assessment</a></li>
+              <li><a href="#training" className="hover:text-emerald-400 transition-colors">Safety Training</a></li>
               <li><a href="#" className="hover:text-emerald-400 transition-colors">Careers</a></li>
               <li><a href="#contact" className="hover:text-emerald-400 transition-colors">Contact</a></li>
             </ul>
           </div>
         </div>
         
-        <div className="pt-8 border-t border-slate-800 flex flex-col md:row justify-between items-center gap-4 text-sm text-slate-500">
+        <div className="pt-8 border-t border-slate-800 dark:border-slate-900 flex flex-col md:row justify-between items-center gap-4 text-sm text-slate-500">
           <p>© 2026 Aegis AI & Safety Systems. All rights reserved.</p>
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
@@ -682,41 +733,29 @@ const Footer = () => {
 // --- Main App ---
 
 export default function App() {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+
   return (
-    <div className="min-h-screen font-sans">
-      <Navbar />
+    <div className="min-h-screen font-sans bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+      <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       
       <main>
         <Hero />
         
-        {/* Stats Section */}
-        <section className="py-16 bg-white border-y border-slate-100">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { label: 'Industries Served', value: '12+' },
-                { label: 'AI Models Deployed', value: '150+' },
-                { label: 'Safety Incidents Reduced', value: '40%' },
-                { label: 'Global Partners', value: '25+' }
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="text-4xl font-bold text-slate-900 mb-1"
-                  >
-                    {stat.value}
-                  </motion.div>
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <SocialProof />
-
         <Suspense fallback={<SectionLoading />}>
           <Services />
         </Suspense>
@@ -731,6 +770,14 @@ export default function App() {
         
         <Suspense fallback={<SectionLoading />}>
           <ResearchSection />
+        </Suspense>
+
+        <Suspense fallback={<SectionLoading />}>
+          <RiskAssessmentSection />
+        </Suspense>
+
+        <Suspense fallback={<SectionLoading />}>
+          <TrainingSection />
         </Suspense>
 
         <ContactSection />
