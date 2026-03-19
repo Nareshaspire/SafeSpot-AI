@@ -138,7 +138,7 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggleDar
 
 const Hero = () => {
   return (
-    <section className="relative pt-32 pb-20 overflow-hidden">
+    <section className="relative pt-32 pb-20 overflow-hidden transition-colors duration-300">
       {/* Background Accents */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl -z-10 opacity-60" />
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl -z-10 opacity-60" />
@@ -153,9 +153,9 @@ const Hero = () => {
             <Zap size={14} />
             <span>Next-Gen Health & Safety</span>
           </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] mb-8 dark:text-white">
-            Safety First. <br />
-            <span className="text-gradient">AI Always.</span>
+          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.1] mb-8 text-slate-900 dark:text-white">
+            Safety Redefined. <br />
+            <span className="text-gradient">AI Driven.</span>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-10 max-w-xl">
             We empower global organizations with intelligent health and safety applications. From predictive risk assessment to full-lifecycle AI integration, we build the future of workplace security.
@@ -225,7 +225,7 @@ const Hero = () => {
           >
             <div className="flex items-center gap-3 mb-2">
               <CheckCircle2 className="text-emerald-500" size={20} />
-              <span className="text-sm font-bold dark:text-white">Predictive Safety</span>
+              <span className="text-sm font-bold text-slate-900 dark:text-white">Predictive Safety</span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">Implementing IEEE-standard models <br />for proactive risk mitigation.</p>
           </motion.div>
@@ -273,56 +273,56 @@ const ContactSection = () => {
   };
 
   const getInputClass = (fieldName: keyof typeof errors, value: string) => {
-    const base = "w-full px-4 py-3 rounded-xl border outline-none transition-all ";
-    if (value.length === 0) return base + "border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200";
-    if (errors[fieldName]) return base + "border-red-500 ring-2 ring-red-100 bg-red-50";
-    return base + "border-emerald-500 ring-2 ring-emerald-100 bg-emerald-50/30";
+    const base = "w-full px-4 py-3 rounded-xl border outline-none transition-all bg-white dark:bg-slate-800 dark:text-white ";
+    if (value.length === 0) return base + "border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900/30";
+    if (errors[fieldName]) return base + "border-red-500 ring-2 ring-red-100 dark:ring-red-900/30 bg-red-50 dark:bg-red-900/20";
+    return base + "border-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-900/30 bg-emerald-50/30 dark:bg-emerald-900/10";
   };
 
   return (
-    <section id="contact" className="py-24 bg-white">
+    <section id="contact" className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16">
           <div>
-            <h2 className="font-display text-4xl font-bold mb-6 text-slate-900">Get in Touch</h2>
-            <p className="text-lg text-slate-600 mb-10 leading-relaxed">
+            <h2 className="font-display text-4xl font-bold mb-6 text-slate-900 dark:text-white">Get in Touch</h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
               Ready to implement next-generation safety AI? Our team of experts is here to help you navigate the full lifecycle of AI integration.
             </p>
             
             <div className="space-y-8">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 shrink-0">
+                <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
                   <Mail size={24} />
                 </div>
                 <div>
-                  <h5 className="font-bold text-slate-900">Email Us</h5>
-                  <p className="text-slate-600">contact@aegis-ai.ca</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white">Email Us</h5>
+                  <p className="text-slate-600 dark:text-slate-400">contact@aegis-ai.ca</p>
                 </div>
               </div>
               
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
+                <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
                   <Phone size={24} />
                 </div>
                 <div>
-                  <h5 className="font-bold text-slate-900">Call Us</h5>
-                  <p className="text-slate-600">+1 (705) 555-0123</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white">Call Us</h5>
+                  <p className="text-slate-600 dark:text-slate-400">+1 (705) 555-0123</p>
                 </div>
               </div>
               
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 shrink-0">
+                <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <h5 className="font-bold text-slate-900">Office</h5>
-                  <p className="text-slate-600">Sudbury, Ontario, Canada</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white">Office</h5>
+                  <p className="text-slate-600 dark:text-slate-400">Sudbury, Ontario, Canada</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="glass p-8 md:p-10 rounded-[32px] shadow-xl border-slate-100 relative overflow-hidden">
+          <div className="glass p-8 md:p-10 rounded-[32px] shadow-xl border-slate-100 dark:border-slate-800 relative overflow-hidden">
             <AnimatePresence mode="wait">
               {!isSubmitted ? (
                 <motion.form 
@@ -336,7 +336,7 @@ const ContactSection = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+                        <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
                         {errors.name && <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Too Short</span>}
                       </div>
                       <div className="relative">
@@ -353,7 +353,7 @@ const ContactSection = () => {
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+                        <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Email Address</label>
                         {errors.email && <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Invalid Email</span>}
                       </div>
                       <div className="relative">
@@ -370,11 +370,11 @@ const ContactSection = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Industry</label>
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Industry</label>
                     <div className="relative">
                       <select 
                         required
-                        className={`w-full px-4 py-3 rounded-xl border outline-none transition-all appearance-none bg-white ${formState.industry ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200'}`}
+                        className={`w-full px-4 py-3 rounded-xl border outline-none transition-all appearance-none bg-white dark:bg-slate-800 dark:text-white ${formState.industry ? 'border-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-900/30' : 'border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900/30'}`}
                         value={formState.industry}
                         onChange={(e) => setFormState({...formState, industry: e.target.value})}
                       >
@@ -393,7 +393,7 @@ const ContactSection = () => {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <label className="text-sm font-bold text-slate-700 ml-1">Message</label>
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Message</label>
                       {errors.message && <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Min 10 characters</span>}
                     </div>
                     <div className="relative">
@@ -414,8 +414,8 @@ const ContactSection = () => {
                     whileTap={isFormValid ? { scale: 0.98 } : {}}
                     className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 group relative overflow-hidden ${
                       isFormValid 
-                        ? 'bg-slate-900 text-white hover:bg-emerald-600 shadow-slate-200' 
-                        : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'
+                        ? 'bg-slate-900 dark:bg-emerald-600 text-white hover:bg-emerald-600 dark:hover:bg-emerald-500 shadow-slate-200 dark:shadow-none' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed shadow-none'
                     }`}
                   >
                     <AnimatePresence mode="wait">
@@ -559,10 +559,10 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="absolute bottom-20 right-0 w-[350px] md:w-[400px] h-[500px] bg-white rounded-[32px] shadow-2xl border border-slate-100 flex flex-col overflow-hidden"
+            className="absolute bottom-20 right-0 w-[350px] md:w-[400px] h-[500px] bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
+            <div className="bg-slate-900 dark:bg-slate-950 p-6 text-white flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
                   <Bot size={24} />
@@ -581,13 +581,13 @@ const Chatbot = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50 dark:bg-slate-900/50">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user' 
-                      ? 'bg-emerald-600 text-white rounded-tr-none shadow-md shadow-emerald-100' 
-                      : 'bg-white text-slate-700 rounded-tl-none border border-slate-100 shadow-sm'
+                      ? 'bg-emerald-600 text-white rounded-tr-none shadow-md shadow-emerald-100 dark:shadow-none' 
+                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-tl-none border border-slate-100 dark:border-slate-700 shadow-sm'
                   }`}>
                     {msg.text}
                   </div>
@@ -600,7 +600,7 @@ const Chatbot = () => {
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(s)}
-                      className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm"
+                      className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm"
                     >
                       {s}
                     </button>
@@ -610,23 +610,23 @@ const Chatbot = () => {
               
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm flex items-center gap-2">
+                  <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-tl-none border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-2">
                     <Loader2 size={16} className="animate-spin text-emerald-600" />
-                    <span className="text-xs text-slate-400 font-medium">Assistant is thinking...</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Assistant is thinking...</span>
                   </div>
                 </div>
               )}
 
               {error && (
-                <div className="flex flex-col items-center gap-3 p-4 bg-red-50 rounded-2xl border border-red-100">
-                  <div className="flex items-center gap-2 text-red-600">
+                <div className="flex flex-col items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-100 dark:border-red-900/30">
+                  <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                     <AlertCircle size={18} />
                     <span className="text-xs font-bold uppercase tracking-wider">Connection Error</span>
                   </div>
-                  <p className="text-xs text-red-700 text-center leading-relaxed">{error}</p>
+                  <p className="text-xs text-red-700 dark:text-red-300 text-center leading-relaxed">{error}</p>
                   <button 
                     onClick={handleRetry}
-                    className="flex items-center gap-2 px-4 py-2 bg-white text-red-600 rounded-xl text-xs font-bold border border-red-200 hover:bg-red-50 transition-colors shadow-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 rounded-xl text-xs font-bold border border-red-200 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/40 transition-colors shadow-sm"
                   >
                     <RefreshCw size={14} />
                     Retry Last Message
@@ -636,11 +636,11 @@ const Chatbot = () => {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100 flex gap-2">
+            <form onSubmit={handleSend} className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2">
               <input 
                 type="text" 
                 placeholder="Ask about our services..."
-                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-sm"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900/30 outline-none transition-all text-sm"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={isLoading}
@@ -648,7 +648,7 @@ const Chatbot = () => {
               <button 
                 type="submit" 
                 disabled={isLoading || !input.trim()}
-                className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 transition-all disabled:opacity-50"
+                className="w-10 h-10 bg-slate-900 dark:bg-emerald-600 text-white rounded-xl flex items-center justify-center hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all disabled:opacity-50"
               >
                 <Send size={18} />
               </button>
@@ -783,9 +783,9 @@ export default function App() {
         <ContactSection />
 
         {/* CTA Section */}
-        <section className="py-24">
+        <section className="py-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="bg-gradient-to-br from-emerald-600 to-indigo-700 rounded-[40px] p-12 md:p-20 text-center text-white relative overflow-hidden">
+            <div className="bg-gradient-to-br from-emerald-600 to-indigo-700 dark:from-emerald-700 dark:to-indigo-900 rounded-[40px] p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-emerald-100/20 dark:shadow-none">
               <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                 <div className="absolute top-10 left-10 w-64 h-64 border-4 border-white rounded-full" />
                 <div className="absolute bottom-10 right-10 w-96 h-96 border-4 border-white rounded-full" />

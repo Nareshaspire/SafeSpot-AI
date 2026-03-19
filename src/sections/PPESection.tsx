@@ -4,7 +4,7 @@ import { Activity } from 'lucide-react';
 
 const PPESection = () => {
   return (
-    <section className="py-24 bg-slate-900 text-white overflow-hidden">
+    <section className="py-24 bg-slate-900 dark:bg-slate-950 text-white overflow-hidden transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div 
@@ -22,18 +22,18 @@ const PPESection = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
             </div>
             {/* Overlay Widget */}
-            <div className="absolute -bottom-6 -right-6 glass p-6 rounded-3xl border-white/10 shadow-2xl text-slate-900">
+            <div className="absolute -bottom-6 -right-6 glass p-6 rounded-3xl border-white/10 shadow-2xl text-slate-900 dark:text-white">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                   <Activity size={20} />
                 </div>
                 <span className="font-bold">Vitals Sync</span>
               </div>
               <div className="space-y-2">
-                <div className="h-1.5 w-32 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-1.5 w-32 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div className="h-full w-3/4 bg-emerald-500" />
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Hydration Level: Optimal</p>
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Hydration Level: Optimal</p>
               </div>
             </div>
           </motion.div>
@@ -54,7 +54,7 @@ const PPESection = () => {
                 { title: "Gear Compliance", desc: "Computer vision verification of proper PPE usage." },
                 { title: "Emergency Response", desc: "Instant SOS triggers based on fall detection or impact." }
               ].map((item, i) => (
-                <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
                   <h4 className="font-bold mb-2 text-emerald-400">{item.title}</h4>
                   <p className="text-sm text-slate-500">{item.desc}</p>
                 </div>

@@ -137,17 +137,17 @@ const TrainingSection = () => {
   };
 
   return (
-    <section id="training" className="py-24 bg-white relative overflow-hidden">
+    <section id="training" className="py-24 bg-white dark:bg-slate-950 relative overflow-hidden transition-colors duration-300">
       {/* Background Accents */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-emerald-50 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 text-indigo-600 text-sm font-bold mb-4"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-sm font-bold mb-4"
           >
             <GraduationCap size={16} />
             <span>AI-Powered Learning</span>
@@ -156,15 +156,15 @@ const TrainingSection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-6"
+            className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-6"
           >
-            Personalized Safety <span className="text-indigo-600">Training</span>
+            Personalized Safety <span className="text-indigo-600 dark:text-indigo-400">Training</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-slate-600 max-w-2xl mx-auto"
+            className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
           >
             Generate custom training modules tailored to your specific role and workplace hazards. 
             Interactive lessons designed for maximum retention.
@@ -179,15 +179,15 @@ const TrainingSection = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-3xl border border-slate-100 shadow-2xl shadow-indigo-100/50 p-8 md:p-12"
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-2xl shadow-indigo-100/50 dark:shadow-none p-8 md:p-12"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Industry</label>
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Industry</label>
                     <select 
                       value={industry}
                       onChange={(e) => setIndustry(e.target.value)}
-                      className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
                     >
                       <option value="mining">Mining & Resources</option>
                       <option value="construction">Construction & Infrastructure</option>
@@ -197,30 +197,30 @@ const TrainingSection = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Your Role</label>
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Your Role</label>
                     <input 
                       type="text"
                       placeholder="e.g. Site Supervisor, Lab Tech"
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
-                      className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2 mb-8">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Specific Risks or Hazards</label>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Specific Risks or Hazards</label>
                   <textarea 
                     rows={4}
                     placeholder="Describe the hazards you face (e.g. working at heights, chemical exposure, heavy machinery)..."
                     value={risks}
                     onChange={(e) => setRisks(e.target.value)}
-                    className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all font-medium resize-none"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all font-medium resize-none"
                   />
                 </div>
 
                 {error && (
-                  <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl flex items-center gap-3 text-sm font-medium">
+                  <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl flex items-center gap-3 text-sm font-medium">
                     <AlertCircle size={18} />
                     {error}
                   </div>
@@ -229,7 +229,7 @@ const TrainingSection = () => {
                 <button 
                   onClick={generateModule}
                   disabled={isLoading || !role || !risks}
-                  className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
+                  className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 dark:shadow-none flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
                 >
                   {isLoading ? (
                     <>
@@ -252,10 +252,10 @@ const TrainingSection = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="bg-white rounded-3xl border border-slate-100 shadow-2xl shadow-indigo-100/50 overflow-hidden"
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-2xl shadow-indigo-100/50 dark:shadow-none overflow-hidden"
               >
                 {/* Progress Bar */}
-                <div className="h-2 bg-slate-100 w-full">
+                <div className="h-2 bg-slate-100 dark:bg-slate-800 w-full">
                   <motion.div 
                     className="h-full bg-indigo-600"
                     initial={{ width: 0 }}
@@ -265,20 +265,20 @@ const TrainingSection = () => {
 
                 <div className="p-8 md:p-12">
                   <div className="flex items-center justify-between mb-8">
-                    <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest">
+                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
                       Section {currentSection + 1} of {module.sections.length}
                     </span>
-                    <button onClick={reset} className="text-slate-400 hover:text-slate-600 transition-colors">
+                    <button onClick={reset} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
                       <ArrowLeft size={20} />
                     </button>
                   </div>
 
-                  <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">
+                  <h3 className="text-3xl font-display font-bold text-slate-900 dark:text-white mb-6">
                     {module.sections[currentSection].title}
                   </h3>
 
-                  <div className="prose prose-slate max-w-none mb-12">
-                    <p className="text-slate-600 leading-relaxed text-lg whitespace-pre-wrap">
+                  <div className="prose prose-slate dark:prose-invert max-w-none mb-12">
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg whitespace-pre-wrap">
                       {module.sections[currentSection].content}
                     </p>
                   </div>
@@ -302,18 +302,18 @@ const TrainingSection = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="bg-white rounded-3xl border border-slate-100 shadow-2xl shadow-indigo-100/50 p-8 md:p-12"
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-2xl shadow-indigo-100/50 dark:shadow-none p-8 md:p-12"
               >
                 <div className="text-center mb-12">
-                  <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mx-auto mb-4">
+                  <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mx-auto mb-4">
                     <BrainCircuit size={32} />
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-slate-900">Knowledge Check</h3>
-                  <p className="text-slate-500">Question {userAnswers.length + 1} of {module.quiz.length}</p>
+                  <h3 className="text-2xl font-display font-bold text-slate-900 dark:text-white">Knowledge Check</h3>
+                  <p className="text-slate-500 dark:text-slate-400">Question {userAnswers.length + 1} of {module.quiz.length}</p>
                 </div>
 
                 <div className="mb-8">
-                  <p className="text-xl font-bold text-slate-800 mb-6">
+                  <p className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-6">
                     {module.quiz[userAnswers.length].question}
                   </p>
                   <div className="grid grid-cols-1 gap-4">
@@ -321,7 +321,7 @@ const TrainingSection = () => {
                       <button
                         key={i}
                         onClick={() => handleAnswer(i)}
-                        className="text-left p-4 rounded-xl border-2 border-slate-100 hover:border-indigo-600 hover:bg-indigo-50 transition-all font-medium text-slate-700"
+                        className="text-left p-4 rounded-xl border-2 border-slate-100 dark:border-slate-800 hover:border-indigo-600 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all font-medium text-slate-700 dark:text-slate-300"
                       >
                         {option}
                       </button>
@@ -336,20 +336,20 @@ const TrainingSection = () => {
                 key="result"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-3xl border border-slate-100 shadow-2xl shadow-indigo-100/50 p-8 md:p-12 text-center"
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-2xl shadow-indigo-100/50 dark:shadow-none p-8 md:p-12 text-center"
               >
-                <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-6">
+                <div className="w-24 h-24 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-6">
                   <Trophy size={48} />
                 </div>
-                <h3 className="text-3xl font-display font-bold text-slate-900 mb-2">Module Completed!</h3>
-                <p className="text-slate-500 mb-8">You've successfully finished your personalized training.</p>
+                <h3 className="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">Module Completed!</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-8">You've successfully finished your personalized training.</p>
 
-                <div className="bg-slate-50 rounded-2xl p-8 mb-8">
-                  <div className="text-5xl font-display font-bold text-indigo-600 mb-2">
+                <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 mb-8">
+                  <div className="text-5xl font-display font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                     {Math.round((score / module.quiz.length) * 100)}%
                   </div>
-                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Your Score</p>
-                  <p className="text-slate-600 mt-4">
+                  <p className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Your Score</p>
+                  <p className="text-slate-600 dark:text-slate-300 mt-4">
                     You got {score} out of {module.quiz.length} questions correct.
                   </p>
                 </div>
@@ -362,7 +362,7 @@ const TrainingSection = () => {
                     Start New Module
                   </button>
                   <button 
-                    className="border-2 border-slate-100 text-slate-600 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                    className="border-2 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
                   >
                     <Award size={18} />
                     Download Certificate
