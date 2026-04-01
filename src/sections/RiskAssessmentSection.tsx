@@ -1,7 +1,82 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShieldAlert, Send, Loader2, AlertTriangle, CheckCircle, FileText, RefreshCw, ChevronRight, Bell, X, Info } from 'lucide-react';
+import { ShieldAlert, Send, Loader2, AlertTriangle, CheckCircle, FileText, RefreshCw, ChevronRight, Bell, X, Info, ChevronDown, ChevronUp, Flame, Mountain, Wind, Biohazard, FlaskConical } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
+
+const HazardIcon = ({ type, description }: { type: string, description: string }) => {
+  const lowerType = type.toLowerCase();
+  const lowerDesc = description.toLowerCase();
+
+  if (lowerType.includes('fire') || lowerDesc.includes('fire') || lowerDesc.includes('flame')) {
+    return (
+      <motion.div
+        animate={{ opacity: [0.7, 1, 0.7], scale: [0.95, 1.05, 0.95] }}
+        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+        className="text-orange-500"
+      >
+        <Flame size={20} />
+      </motion.div>
+    );
+  }
+
+  if (lowerType.includes('physical') || lowerDesc.includes('rockfall') || lowerDesc.includes('fall') || lowerDesc.includes('collapse')) {
+    return (
+      <motion.div
+        animate={{ y: [0, 2, 0] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        className="text-slate-500"
+      >
+        <Mountain size={20} />
+      </motion.div>
+    );
+  }
+
+  if (lowerType.includes('atmospheric') || lowerDesc.includes('gas') || lowerDesc.includes('ventilation') || lowerDesc.includes('oxygen')) {
+    return (
+      <motion.div
+        animate={{ x: [-1, 1, -1], opacity: [0.6, 0.9, 0.6] }}
+        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+        className="text-blue-400"
+      >
+        <Wind size={20} />
+      </motion.div>
+    );
+  }
+
+  if (lowerType.includes('biological') || lowerDesc.includes('infection') || lowerDesc.includes('virus') || lowerDesc.includes('pathogen')) {
+    return (
+      <motion.div
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        className="text-emerald-500"
+      >
+        <Biohazard size={20} />
+      </motion.div>
+    );
+  }
+
+  if (lowerType.includes('chemical') || lowerDesc.includes('toxic') || lowerDesc.includes('acid') || lowerDesc.includes('disinfectant')) {
+    return (
+      <motion.div
+        animate={{ rotate: [-5, 5, -5] }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        className="text-purple-500"
+      >
+        <FlaskConical size={20} />
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      animate={{ opacity: [0.8, 1, 0.8] }}
+      transition={{ repeat: Infinity, duration: 2 }}
+      className="text-amber-500"
+    >
+      <AlertTriangle size={20} />
+    </motion.div>
+  );
+};
 
 const RiskAssessmentSection = () => {
   const [taskDescription, setTaskDescription] = useState('');
@@ -10,6 +85,15 @@ const RiskAssessmentSection = () => {
   const [report, setReport] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [dismissedAlerts, setDismissedAlerts] = useState<number[]>([]);
+  const [expandedHazardIndex, setExpandedHazardIndex] = useState<number | null>(null);
+  const [isPPEChecklistExpanded, setIsPPEChecklistExpanded] = useState(false);
+  const [checkedPPEItems, setCheckedPPEItems] = useState<string[]>([]);
+
+  const togglePPEItem = (ppe: string) => {
+    setCheckedPPEItems(prev => 
+      prev.includes(ppe) ? prev.filter(item => item !== ppe) : [...prev, ppe]
+    );
+  };
 
   const highSeverityHazards = useMemo(() => {
     if (!report || !report.hazards) return [];
@@ -84,6 +168,8 @@ const RiskAssessmentSection = () => {
     setTaskDescription(example.description);
     setReport(example.report);
     setDismissedAlerts([]);
+    setCheckedPPEItems([]);
+    setIsPPEChecklistExpanded(false);
     setError(null);
     window.scrollTo({ top: document.getElementById('risk-assessment')?.offsetTop, behavior: 'smooth' });
   };
@@ -95,6 +181,8 @@ const RiskAssessmentSection = () => {
     setError(null);
     setReport(null);
     setDismissedAlerts([]);
+    setCheckedPPEItems([]);
+    setIsPPEChecklistExpanded(false);
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
@@ -269,21 +357,43 @@ const RiskAssessmentSection = () => {
                         <motion.div
                           key={`alert-${i}`}
                           initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
+                          animate={{ 
+                            opacity: 1, 
+                            x: 0,
+                            scale: [1, 1.005, 1],
+                          }}
+                          transition={{
+                            scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+                            opacity: { duration: 0.5 },
+                            x: { duration: 0.5 }
+                          }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className="bg-red-600 text-white p-6 rounded-[32px] shadow-xl shadow-red-200 dark:shadow-none relative overflow-hidden group"
+                          className="bg-red-600 text-white p-6 rounded-[32px] shadow-2xl shadow-red-500/40 dark:shadow-none relative overflow-hidden group"
                         >
+                          {/* Pulsing glow background */}
+                          <motion.div 
+                            className="absolute inset-0 bg-white/10 pointer-events-none"
+                            animate={{ opacity: [0, 0.3, 0] }}
+                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                          />
                           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <Bell size={80} className="rotate-12" />
                           </div>
                           
                           <div className="flex items-start gap-4 relative z-10">
-                            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 animate-pulse">
-                              <AlertTriangle size={24} />
+                            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
+                              <HazardIcon type={hazard.type} description={hazard.description} />
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-2">
-                                <h5 className="font-bold text-lg uppercase tracking-wider">CRITICAL HAZARD DETECTED</h5>
+                                <motion.h5 
+                                  animate={{ opacity: [1, 0.8, 1] }}
+                                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                                  className="font-bold text-lg uppercase tracking-wider flex items-center gap-2"
+                                >
+                                  <ShieldAlert size={20} className="shrink-0" />
+                                  CRITICAL HAZARD DETECTED
+                                </motion.h5>
                                 <button 
                                   onClick={() => setDismissedAlerts(prev => [...prev, i])}
                                   className="p-1 hover:bg-white/20 rounded-lg transition-colors"
@@ -291,7 +401,13 @@ const RiskAssessmentSection = () => {
                                   <X size={20} />
                                 </button>
                               </div>
-                              <p className="font-medium mb-4 text-red-50">{hazard.description}</p>
+                              <motion.p 
+                                animate={{ opacity: [1, 0.85, 1] }}
+                                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                                className="font-medium mb-4 text-red-50"
+                              >
+                                {hazard.description}
+                              </motion.p>
                               
                               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20">
                                 <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-red-100">
@@ -323,17 +439,56 @@ const RiskAssessmentSection = () => {
                         Identified Hazards
                       </h5>
                       {report.hazards.map((hazard: any, i: number) => (
-                        <div key={i} className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                          <div className="flex justify-between items-start mb-2">
-                            <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{hazard.type}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                              hazard.severity === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 
-                              hazard.severity === 'Medium' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                            }`}>
-                              {hazard.severity} Risk
-                            </span>
+                        <div 
+                          key={i} 
+                          className={`p-5 bg-white dark:bg-slate-900 rounded-2xl border transition-all cursor-pointer ${
+                            expandedHazardIndex === i 
+                              ? 'border-indigo-200 dark:border-indigo-900/50 shadow-md' 
+                              : 'border-slate-100 dark:border-slate-800 shadow-sm hover:border-slate-200 dark:hover:border-slate-700'
+                          }`}
+                          onClick={() => setExpandedHazardIndex(expandedHazardIndex === i ? null : i)}
+                        >
+                          <div className="flex gap-4 items-start">
+                            <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-700 mt-1">
+                              <HazardIcon type={hazard.type} description={hazard.description} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-start mb-2">
+                                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{hazard.type}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                    hazard.severity === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 
+                                    hazard.severity === 'Medium' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                                  }`}>
+                                    {hazard.severity} Risk
+                                  </span>
+                                  {expandedHazardIndex === i ? <ChevronUp size={14} className="text-slate-400" /> : <ChevronDown size={14} className="text-slate-400" />}
+                                </div>
+                              </div>
+                              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{hazard.description}</p>
+                              
+                              <AnimatePresence>
+                                {expandedHazardIndex === i && hazard.immediate_action && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className="overflow-hidden"
+                                  >
+                                    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                      <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
+                                        <ShieldAlert size={12} />
+                                        Immediate Action
+                                      </div>
+                                      <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
+                                        {hazard.immediate_action}
+                                      </p>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
                           </div>
-                          <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{hazard.description}</p>
                         </div>
                       ))}
                     </div>
@@ -364,7 +519,7 @@ const RiskAssessmentSection = () => {
                         <ShieldAlert size={20} className="text-emerald-400" />
                         Required PPE
                       </h5>
-                      <ul className="grid grid-cols-2 gap-3">
+                      <ul className="grid grid-cols-2 gap-3 mb-6">
                         {report.ppe_requirements.map((ppe: string, i: number) => (
                           <li key={i} className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -372,6 +527,60 @@ const RiskAssessmentSection = () => {
                           </li>
                         ))}
                       </ul>
+
+                      <button 
+                        onClick={() => setIsPPEChecklistExpanded(!isPPEChecklistExpanded)}
+                        className="w-full py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all flex items-center justify-between text-sm font-bold group"
+                      >
+                        <span className="flex items-center gap-2">
+                          <CheckCircle size={16} className={checkedPPEItems.length === report.ppe_requirements.length ? "text-emerald-400" : "text-slate-500"} />
+                          Safety Verification Checklist
+                        </span>
+                        {isPPEChecklistExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+
+                      <AnimatePresence>
+                        {isPPEChecklistExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="mt-4 space-y-2 pt-2">
+                              {report.ppe_requirements.map((ppe: string, i: number) => (
+                                <div 
+                                  key={`check-${i}`}
+                                  onClick={() => togglePPEItem(ppe)}
+                                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer transition-all border border-transparent hover:border-white/10"
+                                >
+                                  <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                                    checkedPPEItems.includes(ppe) 
+                                      ? 'bg-emerald-500 border-emerald-500' 
+                                      : 'border-slate-700 bg-slate-800'
+                                  }`}>
+                                    {checkedPPEItems.includes(ppe) && <CheckCircle size={12} className="text-white" />}
+                                  </div>
+                                  <span className={`text-xs font-medium transition-all ${
+                                    checkedPPEItems.includes(ppe) ? 'text-slate-300 line-through opacity-50' : 'text-slate-200'
+                                  }`}>
+                                    {ppe}
+                                  </span>
+                                </div>
+                              ))}
+                              {checkedPPEItems.length === report.ppe_requirements.length && (
+                                <motion.div 
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  className="mt-4 p-3 bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-center"
+                                >
+                                  <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">All PPE Verified & Secured</p>
+                                </motion.div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                     <div className="p-8 bg-indigo-50 dark:bg-indigo-900/10 rounded-[32px] border border-indigo-100 dark:border-indigo-900/20">
                       <h5 className="font-bold text-indigo-900 dark:text-indigo-100 mb-4">Regulatory Compliance</h5>
