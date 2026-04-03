@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  BookOpen, 
-  GraduationCap, 
-  Play, 
-  CheckCircle2, 
-  ChevronRight, 
-  Award, 
-  BrainCircuit, 
-  Loader2, 
-  AlertCircle,
-  Trophy,
-  ArrowLeft
-} from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
+import {
+    AlertCircle,
+    ArrowLeft,
+    Award,
+    BrainCircuit,
+    ChevronRight,
+    GraduationCap,
+    Loader2,
+    Trophy
+} from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
 
 interface QuizQuestion {
   question: string;
@@ -50,7 +47,7 @@ const TrainingSection = () => {
     setError(null);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Generate a personalized safety training module for a ${role} in the ${industry} industry. 
@@ -362,6 +359,7 @@ const TrainingSection = () => {
                     Start New Module
                   </button>
                   <button 
+                    onClick={() => window.print()}
                     className="border-2 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
                   >
                     <Award size={18} />
