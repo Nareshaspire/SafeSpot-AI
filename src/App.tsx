@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GoogleGenAI } from "@google/genai";
+
 import {
     Activity,
     AlertCircle,
@@ -494,28 +494,15 @@ const Chatbot = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: messageText,
-        config: {
-          systemInstruction: `You are the Aegis AI Assistant, an expert in AI-driven health and safety solutions. 
-          Your goal is to help users understand Aegis AI & Safety's services and AI implementation strategies.
-          
-          Key Knowledge:
-          - Services: H&S Applications (Incident Reporting, Compliance Tracking, Audit Automation), AI Implementation (Computer Vision, Predictive Analytics, NLP), Lifecycle Management (Strategy, Design, Deployment, Optimization).
-          - New Feature: AI-Driven Risk Assessment (Predictive analysis of hazards and mitigation strategies based on user input).
-          - New Feature: Personalized Safety Training (AI-generated training modules with interactive quizzes and progress tracking).
-          - Research: Rooted in IEEE research (IEEE 7000, 7001, 2846) for transparency and ethical AI.
-          - Industry Focus: Mining, Construction, Logistics, and Healthcare.
-          - Tone: Professional, authoritative, helpful, and safety-focused.
-          - Location: Based in Sudbury, Ontario, Canada.
-          
-          Always prioritize safety and ethical AI implementation in your answers. If you don't know something specific about a user's company, offer to connect them with a human safety expert via the contact form.`
-        }
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: messageText }),
       });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
 
-      const botResponse = response.text || "I'm sorry, I couldn't process that request. Please try again or contact our team.";
+      const botResponse = data.text || "I'm sorry, I couldn't process that request. Please try again or contact our team.";
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
       setLastUserMessage(null);
     } catch (err: any) {
