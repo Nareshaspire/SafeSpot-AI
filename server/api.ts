@@ -4,7 +4,7 @@ import express from 'express';
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 app.use(express.json());
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
@@ -15,7 +15,7 @@ if (!GEMINI_API_KEY) {
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 // Rate limiting: simple in-memory per-IP cooldown
-const rateLimitMap = new Map<string, number>();
+export const rateLimitMap = new Map<string, number>();
 const RATE_LIMIT_MS = 2000;
 
 function rateLimit(req: express.Request, res: express.Response): boolean {
@@ -197,6 +197,8 @@ app.post('/api/training', async (req, res) => {
 });
 
 const PORT = process.env.API_PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`API server running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`API server running on http://localhost:${PORT}`);
+  });
+}

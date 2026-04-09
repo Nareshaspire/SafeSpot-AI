@@ -226,7 +226,7 @@ const Hero = () => {
   );
 };
 
-const ContactSection = () => {
+export const ContactSection = () => {
   const [formState, setFormState] = useState({ name: '', email: '', industry: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
