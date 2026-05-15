@@ -1,16 +1,19 @@
-
-import {
-    AlertCircle,
-    ArrowLeft,
-    Award,
-    BrainCircuit,
-    ChevronRight,
-    GraduationCap,
-    Loader2,
-    Trophy
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  BookOpen, 
+  GraduationCap, 
+  Play, 
+  CheckCircle2, 
+  ChevronRight, 
+  Award, 
+  BrainCircuit, 
+  Loader2, 
+  AlertCircle,
+  Trophy,
+  ArrowLeft
 } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
+import { GoogleGenAI, Type } from "@google/genai";
 
 interface QuizQuestion {
   question: string;
@@ -47,13 +50,50 @@ const TrainingSection = () => {
     setError(null);
 
     try {
-      const res = await fetch('/api/training', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role, industry, risks }),
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: `Generate a personalized safety training module for a ${role} in the ${industry} industry. 
+        Focus on these identified risks: ${risks}. 
+        The module should be professional, engaging, and highly practical.`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              title: { type: Type.STRING },
+              objectives: { type: Type.ARRAY, items: { type: Type.STRING } },
+              sections: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    title: { type: Type.STRING },
+                    content: { type: Type.STRING }
+                  },
+                  required: ["title", "content"]
+                }
+              },
+              quiz: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    question: { type: Type.STRING },
+                    options: { type: Type.ARRAY, items: { type: Type.STRING } },
+                    correctAnswer: { type: Type.INTEGER },
+                    explanation: { type: Type.STRING }
+                  },
+                  required: ["question", "options", "correctAnswer", "explanation"]
+                }
+              }
+            },
+            required: ["title", "objectives", "sections", "quiz"]
+          }
+        }
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Request failed');
+
+      const data = JSON.parse(response.text || '{}');
       setModule(data);
       setCurrentStep(1);
       setCurrentSection(0);
@@ -322,7 +362,6 @@ const TrainingSection = () => {
                     Start New Module
                   </button>
                   <button 
-                    onClick={() => window.print()}
                     className="border-2 border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
                   >
                     <Award size={18} />

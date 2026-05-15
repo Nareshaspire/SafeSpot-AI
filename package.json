@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "dev:server": "tsx server/api.ts",
-    "dev:full": "npx tsx server/api.ts & vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
@@ -14,7 +12,6 @@
   },
   "dependencies": {
     "@google/genai": "^1.45.0",
-    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",

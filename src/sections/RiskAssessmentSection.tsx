@@ -1,7 +1,7 @@
-import { AlertTriangle, Bell, Biohazard, CheckCircle, ChevronDown, ChevronRight, ChevronUp, FileText, Flame, FlaskConical, Info, Loader2, Mountain, RefreshCw, Send, ShieldAlert, Wind, X } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
-import { useMemo, useState } from 'react';
-
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ShieldAlert, Send, Loader2, AlertTriangle, CheckCircle, FileText, RefreshCw, ChevronRight, Bell, X, Info, ChevronDown, ChevronUp, Flame, Mountain, Wind, Biohazard, FlaskConical } from 'lucide-react';
+import { GoogleGenAI, Type } from "@google/genai";
 
 const HazardIcon = ({ type, description }: { type: string, description: string }) => {
   const lowerType = type.toLowerCase();
@@ -185,13 +185,50 @@ const RiskAssessmentSection = () => {
     setIsPPEChecklistExpanded(false);
 
     try {
-      const res = await fetch('/api/risk-assessment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskDescription, industry }),
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+      const prompt = `Perform a comprehensive health and safety risk assessment for the following task in the ${industry} industry:
+      
+      Task/Workplace Description: ${taskDescription}
+      
+      Please provide the report in a structured JSON format with the following keys:
+      - "summary": A brief overview of the risk level.
+      - "hazards": An array of objects, each with "type" (e.g., Physical, Chemical, Biological), "description", "severity" (Low, Medium, High), and "immediate_action" (only for High severity hazards, otherwise null).
+      - "mitigations": An array of specific, actionable mitigation strategies.
+      - "ppe_requirements": A list of required Personal Protective Equipment.
+      - "regulatory_notes": Any relevant IEEE or safety standards that apply.`;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              summary: { type: Type.STRING },
+              hazards: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    type: { type: Type.STRING },
+                    description: { type: Type.STRING },
+                    severity: { type: Type.STRING, enum: ["Low", "Medium", "High"] },
+                    immediate_action: { type: Type.STRING, nullable: true }
+                  },
+                  required: ["type", "description", "severity"]
+                }
+              },
+              mitigations: { type: Type.ARRAY, items: { type: Type.STRING } },
+              ppe_requirements: { type: Type.ARRAY, items: { type: Type.STRING } },
+              regulatory_notes: { type: Type.STRING }
+            },
+            required: ["summary", "hazards", "mitigations", "ppe_requirements", "regulatory_notes"]
+          }
+        },
       });
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error || 'Request failed');
+
+      const result = JSON.parse(response.text || '{}');
       setReport(result);
     } catch (err) {
       console.error("Risk Assessment Error:", err);
@@ -497,7 +534,14 @@ const RiskAssessmentSection = () => {
                       >
                         <span className="flex items-center gap-2">
                           <CheckCircle size={16} className={checkedPPEItems.length === report.ppe_requirements.length ? "text-emerald-400" : "text-slate-500"} />
-                          Safety Verification Checklist
+                          <span className="flex items-center gap-2">
+                            Safety Verification Checklist
+                            {!isPPEChecklistExpanded && (
+                              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/10 text-slate-400">
+                                {checkedPPEItems.length}/{report.ppe_requirements.length} items checked
+                              </span>
+                            )}
+                          </span>
                         </span>
                         {isPPEChecklistExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                       </button>

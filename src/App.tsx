@@ -3,31 +3,40 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
-import {
-    Activity,
-    AlertCircle,
-    ArrowRight,
-    Bot,
-    CheckCircle2,
-    ChevronRight,
-    Globe,
-    Loader2,
-    Mail,
-    MapPin,
-    Menu,
-    MessageSquare,
-    Moon,
-    Phone,
-    RefreshCw,
-    Send,
-    Shield,
-    Sun,
-    X,
-    Zap
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  Shield, 
+  Cpu, 
+  Activity, 
+  CheckCircle2, 
+  ArrowRight, 
+  Globe, 
+  Zap, 
+  Layers, 
+  Users, 
+  BarChart3,
+  Menu,
+  X,
+  ChevronRight,
+  Search,
+  BookOpen,
+  Code2,
+  Mail,
+  Phone,
+  MapPin,
+  Quote,
+  Star,
+  MessageSquare,
+  Bot,
+  Send,
+  Loader2,
+  RefreshCw,
+  AlertCircle,
+  Sun,
+  Moon
 } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import { GoogleGenAI } from "@google/genai";
 
 // --- Lazy Loaded Sections ---
 const Services = lazy(() => import('./sections/Services'));
@@ -71,7 +80,7 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggleDar
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {['Services', 'AI Lifecycle', 'Research', 'Risk Assessment', 'Training', 'Contact'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replaceAll(' ', '-')}`} className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+            <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
               {item}
             </a>
           ))}
@@ -113,7 +122,7 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: { isDarkMode: boolean, toggleDar
             className="absolute top-full left-0 right-0 glass border-t border-slate-200 dark:border-slate-800 p-6 md:hidden flex flex-col gap-4 shadow-xl"
           >
             {['Services', 'AI Lifecycle', 'Research', 'Risk Assessment', 'Training', 'Contact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replaceAll(' ', '-')}`} className="text-lg font-medium text-slate-900 dark:text-white" onClick={() => setIsMobileMenuOpen(false)}>
+              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-lg font-medium text-slate-900 dark:text-white" onClick={() => setIsMobileMenuOpen(false)}>
                 {item}
               </a>
             ))}
@@ -494,15 +503,28 @@ const Chatbot = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageText }),
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: messageText,
+        config: {
+          systemInstruction: `You are the Aegis AI Assistant, an expert in AI-driven health and safety solutions. 
+          Your goal is to help users understand Aegis AI & Safety's services and AI implementation strategies.
+          
+          Key Knowledge:
+          - Services: H&S Applications (Incident Reporting, Compliance Tracking, Audit Automation), AI Implementation (Computer Vision, Predictive Analytics, NLP), Lifecycle Management (Strategy, Design, Deployment, Optimization).
+          - New Feature: AI-Driven Risk Assessment (Predictive analysis of hazards and mitigation strategies based on user input).
+          - New Feature: Personalized Safety Training (AI-generated training modules with interactive quizzes and progress tracking).
+          - Research: Rooted in IEEE research (IEEE 7000, 7001, 2846) for transparency and ethical AI.
+          - Industry Focus: Mining, Construction, Logistics, and Healthcare.
+          - Tone: Professional, authoritative, helpful, and safety-focused.
+          - Location: Based in Sudbury, Ontario, Canada.
+          
+          Always prioritize safety and ethical AI implementation in your answers. If you don't know something specific about a user's company, offer to connect them with a human safety expert via the contact form.`
+        }
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Request failed');
 
-      const botResponse = data.text || "I'm sorry, I couldn't process that request. Please try again or contact our team.";
+      const botResponse = response.text || "I'm sorry, I couldn't process that request. Please try again or contact our team.";
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
       setLastUserMessage(null);
     } catch (err: any) {
@@ -696,7 +718,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="pt-8 border-t border-slate-800 dark:border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+        <div className="pt-8 border-t border-slate-800 dark:border-slate-900 flex flex-col md:row justify-between items-center gap-4 text-sm text-slate-500">
           <p>© 2026 Aegis AI & Safety Systems. All rights reserved.</p>
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>

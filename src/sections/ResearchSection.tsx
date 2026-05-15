@@ -1,3 +1,4 @@
+import React from 'react';
 import { BookOpen } from 'lucide-react';
 
 const ResearchSection = () => {
@@ -26,18 +27,18 @@ const ResearchSection = () => {
         <div className="lg:w-1/2 grid grid-cols-2 gap-4">
           <div className="space-y-4">
             <div className="h-48 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500" alt="AI-powered cybersecurity monitoring dashboard" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
+              <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
             </div>
             <div className="h-64 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=500" alt="Humanoid robot representing AI safety research" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
+              <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
             </div>
           </div>
           <div className="space-y-4 pt-8">
             <div className="h-64 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=500" alt="Technology workspace with data visualization" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
+              <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
             </div>
             <div className="h-48 rounded-2xl overflow-hidden shadow-lg">
-              <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=500" alt="Circuit board representing ethical AI frameworks" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
+              <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=500" className="w-full h-full object-cover opacity-90 dark:opacity-70" referrerPolicy="no-referrer" />
             </div>
           </div>
         </div>
