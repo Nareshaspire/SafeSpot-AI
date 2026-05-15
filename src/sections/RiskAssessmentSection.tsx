@@ -7,11 +7,16 @@ const HazardIcon = ({ type, description }: { type: string, description: string }
   const lowerType = type.toLowerCase();
   const lowerDesc = description.toLowerCase();
 
-  if (lowerType.includes('fire') || lowerDesc.includes('fire') || lowerDesc.includes('flame')) {
+  // Fire / Flare / Thermal
+  if (lowerType.includes('fire') || lowerDesc.includes('fire') || lowerDesc.includes('flame') || lowerType.includes('thermal')) {
     return (
       <motion.div
-        animate={{ opacity: [0.7, 1, 0.7], scale: [0.95, 1.05, 0.95] }}
-        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+        animate={{ 
+          opacity: [0.7, 1, 0.8, 1, 0.7],
+          scale: [1, 1.05, 0.98, 1.02, 1],
+          y: [0, -1, 0, -0.5, 0]
+        }}
+        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         className="text-orange-500"
       >
         <Flame size={20} />
@@ -19,11 +24,20 @@ const HazardIcon = ({ type, description }: { type: string, description: string }
     );
   }
 
+  // Physical / Rockfall / Fall
   if (lowerType.includes('physical') || lowerDesc.includes('rockfall') || lowerDesc.includes('fall') || lowerDesc.includes('collapse')) {
     return (
       <motion.div
-        animate={{ y: [0, 2, 0] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        animate={{ 
+          y: [-2, 4, -2],
+          rotate: [0, 5, 0, -5, 0]
+        }}
+        transition={{ 
+          repeat: Infinity, 
+          duration: 3, 
+          times: [0, 0.2, 1], // Rapid drop, slow reset
+          ease: "easeIn" 
+        }}
         className="text-slate-500"
       >
         <Mountain size={20} />
@@ -31,23 +45,32 @@ const HazardIcon = ({ type, description }: { type: string, description: string }
     );
   }
 
+  // Atmospheric / Gas / Cloud
   if (lowerType.includes('atmospheric') || lowerDesc.includes('gas') || lowerDesc.includes('ventilation') || lowerDesc.includes('oxygen')) {
     return (
       <motion.div
-        animate={{ x: [-1, 1, -1], opacity: [0.6, 0.9, 0.6] }}
-        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-        className="text-blue-400"
+        animate={{ 
+          x: [-2, 2, -2],
+          y: [1, -1, 1],
+          opacity: [0.4, 0.8, 0.4]
+        }}
+        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        className="text-sky-400"
       >
         <Wind size={20} />
       </motion.div>
     );
   }
 
+  // Biological
   if (lowerType.includes('biological') || lowerDesc.includes('infection') || lowerDesc.includes('virus') || lowerDesc.includes('pathogen')) {
     return (
       <motion.div
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        animate={{ 
+          scale: [1, 1.15, 1],
+          rotate: [0, 10, 0, -10, 0]
+        }}
+        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         className="text-emerald-500"
       >
         <Biohazard size={20} />
@@ -55,11 +78,15 @@ const HazardIcon = ({ type, description }: { type: string, description: string }
     );
   }
 
+  // Chemical
   if (lowerType.includes('chemical') || lowerDesc.includes('toxic') || lowerDesc.includes('acid') || lowerDesc.includes('disinfectant')) {
     return (
       <motion.div
-        animate={{ rotate: [-5, 5, -5] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        animate={{ 
+          y: [0, -2, 0],
+          rotate: [-10, 10, -10]
+        }}
+        transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
         className="text-purple-500"
       >
         <FlaskConical size={20} />
@@ -67,10 +94,27 @@ const HazardIcon = ({ type, description }: { type: string, description: string }
     );
   }
 
+  // Environmental / Weather
+  if (lowerType.includes('environmental') || lowerType.includes('weather') || lowerDesc.includes('wind') || lowerDesc.includes('storm')) {
+    return (
+      <motion.div
+        animate={{ 
+          rotate: [0, 360],
+          opacity: [0.8, 1, 0.8]
+        }}
+        transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+        className="text-indigo-400"
+      >
+        <RefreshCw size={20} />
+      </motion.div>
+    );
+  }
+
+  // Default warning
   return (
     <motion.div
-      animate={{ opacity: [0.8, 1, 0.8] }}
-      transition={{ repeat: Infinity, duration: 2 }}
+      animate={{ opacity: [0.6, 1, 0.6] }}
+      transition={{ repeat: Infinity, duration: 1.5 }}
       className="text-amber-500"
     >
       <AlertTriangle size={20} />
@@ -85,9 +129,10 @@ const RiskAssessmentSection = () => {
   const [report, setReport] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [dismissedAlerts, setDismissedAlerts] = useState<number[]>([]);
-  const [expandedHazardIndex, setExpandedHazardIndex] = useState<number | null>(null);
+  const [expandedHazardId, setExpandedHazardId] = useState<string | null>(null);
   const [isPPEChecklistExpanded, setIsPPEChecklistExpanded] = useState(false);
   const [checkedPPEItems, setCheckedPPEItems] = useState<string[]>([]);
+  const [hazardFilter, setHazardFilter] = useState<'All' | 'Low' | 'Medium' | 'High'>('All');
 
   const togglePPEItem = (ppe: string) => {
     setCheckedPPEItems(prev => 
@@ -99,6 +144,12 @@ const RiskAssessmentSection = () => {
     if (!report || !report.hazards) return [];
     return report.hazards.filter((h: any) => h.severity === 'High');
   }, [report]);
+
+  const filteredHazards = useMemo(() => {
+    if (!report || !report.hazards) return [];
+    if (hazardFilter === 'All') return report.hazards;
+    return report.hazards.filter((h: any) => h.severity === hazardFilter);
+  }, [report, hazardFilter]);
 
   const examples = [
     {
@@ -228,6 +279,8 @@ const RiskAssessmentSection = () => {
     setReport(example.report);
     setDismissedAlerts([]);
     setCheckedPPEItems([]);
+    setHazardFilter('All');
+    setExpandedHazardId(null);
     setIsPPEChecklistExpanded(false);
     setError(null);
     window.scrollTo({ top: document.getElementById('risk-assessment')?.offsetTop, behavior: 'smooth' });
@@ -241,6 +294,8 @@ const RiskAssessmentSection = () => {
     setReport(null);
     setDismissedAlerts([]);
     setCheckedPPEItems([]);
+    setHazardFilter('All');
+    setExpandedHazardId(null);
     setIsPPEChecklistExpanded(false);
 
     try {
@@ -498,103 +553,136 @@ const RiskAssessmentSection = () => {
                     <p className="text-xl text-slate-800 dark:text-slate-200 font-medium leading-relaxed">{report.summary}</p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-8">
-                    {/* Hazards */}
-                    <div className="space-y-4">
-                      <h5 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 ml-2">
-                        <AlertTriangle className="text-amber-500" size={20} />
-                        Identified Hazards
-                      </h5>
-                      {report.hazards.map((hazard: any, i: number) => (
-                        <div 
-                          key={i} 
-                          className={`p-5 bg-white dark:bg-slate-900 rounded-2xl border transition-all cursor-pointer ${
-                            expandedHazardIndex === i 
-                              ? 'border-indigo-200 dark:border-indigo-900/50 shadow-md' 
-                              : 'border-slate-100 dark:border-slate-800 shadow-sm hover:border-slate-200 dark:hover:border-slate-700'
-                          }`}
-                          onClick={() => setExpandedHazardIndex(expandedHazardIndex === i ? null : i)}
-                        >
-                          <div className="flex gap-4 items-start">
-                            <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-700 mt-1">
-                              <HazardIcon type={hazard.type} description={hazard.description} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex justify-between items-start mb-2">
-                                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{hazard.type}</span>
-                                <div className="flex items-center gap-2">
-                                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                                    hazard.severity === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 
-                                    hazard.severity === 'Medium' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                                  }`}>
-                                    {hazard.severity} Risk
-                                  </span>
-                                  {expandedHazardIndex === i ? <ChevronUp size={14} className="text-slate-400" /> : <ChevronDown size={14} className="text-slate-400" />}
-                                </div>
-                              </div>
-                              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{hazard.description}</p>
-                              
-                              <AnimatePresence>
-                                {expandedHazardIndex === i && (
-                                  <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    className="overflow-hidden"
-                                  >
-                                    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
-                                      {/* Immediate Action for High Severity */}
-                                      {hazard.immediate_action && (
-                                        <div>
-                                          <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
-                                            <ShieldAlert size={12} />
-                                            Immediate Action Required
-                                          </div>
-                                          <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
-                                            {hazard.immediate_action}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {/* Detailed Info for all (or especially non-high) */}
-                                      {hazard.detailed_info && (
-                                        <div>
-                                          <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                                            <Info size={12} />
-                                            Detailed Context
-                                          </div>
-                                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">
-                                            {hazard.detailed_info}
-                                          </p>
-                                        </div>
-                                      )}
-
-                                      {/* Specific Mitigations */}
-                                      {hazard.mitigation_strategies && hazard.mitigation_strategies.length > 0 && (
-                                        <div>
-                                          <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-                                            <CheckCircle size={12} />
-                                            Focused Mitigations
-                                          </div>
-                                          <ul className="space-y-1.5">
-                                            {hazard.mitigation_strategies.map((strategy: string, j: number) => (
-                                              <li key={j} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                                                <div className="w-1 h-1 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                                                <span>{strategy}</span>
-                                              </li>
-                                            ))}
-                                          </ul>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
+                    <div className="grid md:grid-cols-2 gap-8">
+                      {/* Hazards */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between mb-2 ml-2">
+                          <h5 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <AlertTriangle className="text-amber-500" size={20} />
+                            Identified Hazards
+                          </h5>
+                          <div className="flex items-center gap-2">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Filter:</label>
+                            <div className="relative flex items-center">
+                              <select 
+                                value={hazardFilter}
+                                onChange={(e) => setHazardFilter(e.target.value as any)}
+                                className="text-[10px] font-bold bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-2 pr-6 py-1 outline-none cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors appearance-none"
+                              >
+                                <option value="All">All ({report.hazards.length})</option>
+                                <option value="High">High ({report.hazards.filter((h: any) => h.severity === 'High').length})</option>
+                                <option value="Medium">Medium ({report.hazards.filter((h: any) => h.severity === 'Medium').length})</option>
+                                <option value="Low">Low ({report.hazards.filter((h: any) => h.severity === 'Low').length})</option>
+                              </select>
+                              <ChevronDown size={12} className="absolute right-1.5 pointer-events-none text-slate-400" />
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+
+                        {filteredHazards.length > 0 ? (
+                          filteredHazards.map((hazard: any, i: number) => {
+                            const hazardId = `${hazard.type}-${hazard.description}`;
+                            return (
+                              <motion.div 
+                                layout
+                                key={hazardId} 
+                                className={`p-5 bg-white dark:bg-slate-900 rounded-2xl border transition-all cursor-pointer ${
+                                  expandedHazardId === hazardId 
+                                    ? 'border-indigo-200 dark:border-indigo-900/50 shadow-md ring-1 ring-indigo-50 dark:ring-indigo-900/20' 
+                                    : 'border-slate-100 dark:border-slate-800 shadow-sm hover:border-slate-200 dark:hover:border-slate-700'
+                                }`}
+                                onClick={() => setExpandedHazardId(expandedHazardId === hazardId ? null : hazardId)}
+                              >
+                                <div className="flex gap-4 items-start">
+                                  <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-700 mt-1">
+                                    <HazardIcon type={hazard.type} description={hazard.description} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-start mb-2">
+                                      <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{hazard.type}</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                          hazard.severity === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 
+                                          hazard.severity === 'Medium' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                                        }`}>
+                                          {hazard.severity} Risk
+                                        </span>
+                                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                                          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">Details</span>
+                                          {expandedHazardId === hazardId ? <ChevronUp size={12} className="text-slate-400" /> : <ChevronDown size={12} className="text-slate-400" />}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{hazard.description}</p>
+                                    
+                                    <AnimatePresence>
+                                      {expandedHazardId === hazardId && (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: 'auto', opacity: 1 }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                                          className="overflow-hidden"
+                                        >
+                                          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-5 bg-slate-50/50 dark:bg-slate-800/30 -mx-5 px-5 pb-4 rounded-b-2xl">
+                                            {/* Immediate Action for High Severity */}
+                                            {hazard.immediate_action && (
+                                              <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-900/30">
+                                                <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
+                                                  <ShieldAlert size={12} />
+                                                  Immediate Action Required
+                                                </div>
+                                                <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
+                                                  {hazard.immediate_action}
+                                                </p>
+                                              </div>
+                                            )}
+  
+                                            {/* Detailed Info */}
+                                            {hazard.detailed_info && (
+                                              <div>
+                                                <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 text-opacity-80">
+                                                  <Info size={12} />
+                                                  Detailed Context
+                                                </div>
+                                                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">
+                                                  {hazard.detailed_info}
+                                                </p>
+                                              </div>
+                                            )}
+  
+                                            {/* Specific Mitigations */}
+                                            {hazard.mitigation_strategies && hazard.mitigation_strategies.length > 0 && (
+                                              <div>
+                                                <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+                                                  <CheckCircle size={12} />
+                                                  Focused Mitigations
+                                                </div>
+                                                <ul className="grid grid-cols-1 gap-2">
+                                                  {hazard.mitigation_strategies.map((strategy: string, j: number) => (
+                                                    <li key={j} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3 p-2 bg-white dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800">
+                                                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                                                      <span>{strategy}</span>
+                                                    </li>
+                                                  ))}
+                                                </ul>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            );
+                          })
+                        ) : (
+                          <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
+                            <p className="text-sm text-slate-500 dark:text-slate-400">No {hazardFilter.toLowerCase()} severity hazards identified.</p>
+                          </div>
+                        )}
+                      </div>
 
                     {/* Mitigations */}
                     <div className="space-y-4">
