@@ -108,9 +108,29 @@ const RiskAssessmentSection = () => {
       report: {
         summary: "High-risk operation requiring stringent controls for atmospheric safety and structural stability.",
         hazards: [
-          { type: "Physical", description: "Rockfall or structural collapse due to instability at depth.", severity: "High", immediate_action: "Evacuate the immediate area and install primary structural supports before proceeding." },
-          { type: "Atmospheric", description: "Accumulation of hazardous gases (methane, CO) and low oxygen levels.", severity: "High", immediate_action: "Activate emergency ventilation systems and monitor gas levels continuously." },
-          { type: "Physical", description: "Hearing loss from high-decibel pneumatic machinery.", severity: "Medium" }
+          { 
+            type: "Physical", 
+            description: "Rockfall or structural collapse due to instability at depth.", 
+            severity: "High", 
+            immediate_action: "Evacuate the immediate area and install primary structural supports before proceeding.",
+            detailed_info: "In deep mining operations, high lithostatic pressure can lead to sudden rock bursts or slower deformation of tunnel walls. This environment features complex geological fault lines that increase collapse probability.",
+            mitigation_strategies: ["Perform daily borehole inspections using ultrasonic scanners.", "Install real-time seismic monitoring sensors."]
+          },
+          { 
+            type: "Atmospheric", 
+            description: "Accumulation of hazardous gases (methane, CO) and low oxygen levels.", 
+            severity: "High", 
+            immediate_action: "Activate emergency ventilation systems and monitor gas levels continuously.",
+            detailed_info: "Enclosed spaces at this depth naturally accumulate heavy gases while lighter oxygen is displaced. Microbial activity in moist conditions can also produce hydrogen sulfide.",
+            mitigation_strategies: ["Calibrate multi-gas detectors before every shift.", "Provide mandatory auxiliary ventilation at the drilling face."]
+          },
+          { 
+            type: "Physical", 
+            description: "Hearing loss from high-decibel pneumatic machinery.", 
+            severity: "Medium",
+            detailed_info: "Continuous exposure to noise levels above 85dB cause irreversible damage to the inner ear's hair cells. In a rock-walled tunnel, sound reverberation amplifies this effect.",
+            mitigation_strategies: ["Implement a strict rotation schedule to limit individual exposure time.", "Use vibration-dampening mounting for all pneumatic equipment."]
+          }
         ],
         mitigations: [
           "Implement continuous automated gas monitoring with real-time alerts.",
@@ -128,9 +148,29 @@ const RiskAssessmentSection = () => {
       report: {
         summary: "Critical safety operation focusing on fall prevention and public protection from falling objects.",
         hazards: [
-          { type: "Physical", description: "Falls from height during assembly/disassembly.", severity: "High", immediate_action: "Ensure all workers are 100% tied off with dual-lanyard systems at all times." },
-          { type: "Physical", description: "Falling objects impacting workers or pedestrians below.", severity: "High", immediate_action: "Establish a secure exclusion zone below the work area and install debris netting." },
-          { type: "Environmental", description: "Structural failure of scaffolding due to high wind loads.", severity: "Medium" }
+          { 
+            type: "Physical", 
+            description: "Falls from height during assembly/disassembly.", 
+            severity: "High", 
+            immediate_action: "Ensure all workers are 100% tied off with dual-lanyard systems at all times.",
+            detailed_info: "Working at 30 stories exposes personnel to high-altitude vertigo and unpredictable wind gusts that can destabilize balance during transition points of scaffolding assembly.",
+            mitigation_strategies: ["Use self-retracting lifelines (SRLs) for vertical movement.", "Conduct mandatory 'fit-for-work' vertigo checks daily."]
+          },
+          { 
+            type: "Physical", 
+            description: "Falling objects impacting workers or pedestrians below.", 
+            severity: "High", 
+            immediate_action: "Establish a secure exclusion zone below the work area and install debris netting.",
+            detailed_info: "Gravity accelerates even small tools to lethal velocities from this height. Wind can carry lightweight materials outside traditional vertically-profiled exclusion zones.",
+            mitigation_strategies: ["Mandatory tethering of all hand tools exceeding 0.5kg.", "Install fine-mesh screening in addition to standard debris netting."]
+          },
+          { 
+            type: "Environmental", 
+            description: "Structural failure of scaffolding due to high wind loads.", 
+            severity: "Medium",
+            detailed_info: "High-rise corridors create Venturi effects, significantly increasing wind pressure on large-surface-area scaffolding components compared to ground level.",
+            mitigation_strategies: ["Monitor local wind speeds with on-site anemometers; cease work if >30km/h.", "Increase frequency of wall-tie inspections during storm seasons."]
+          }
         ],
         mitigations: [
           "Install debris netting and catch platforms around the perimeter.",
@@ -148,9 +188,28 @@ const RiskAssessmentSection = () => {
       report: {
         summary: "Medium-to-high risk task requiring strict adherence to sterilization and containment protocols.",
         hazards: [
-          { type: "Biological", description: "Accidental needle-stick injuries or sharps exposure.", severity: "High", immediate_action: "Immediately wash the affected area and report to the supervisor for post-exposure prophylaxis." },
-          { type: "Biological", description: "Aerosolization of pathogens during waste compaction.", severity: "Medium" },
-          { type: "Chemical", description: "Exposure to disinfectants and sterilization chemicals.", severity: "Low" }
+          { 
+            type: "Biological", 
+            description: "Accidental needle-stick injuries or sharps exposure.", 
+            severity: "High", 
+            immediate_action: "Immediately wash the affected area and report to the supervisor for post-exposure prophylaxis.",
+            detailed_info: "High-volume processing increases the frequency of repetitive manual motions, leading to fatigue and a higher probability of handling errors with hazardous sharps.",
+            mitigation_strategies: ["Utilize hands-free needle destruction devices at the point of use.", "Implement a 'single-hand technique' policy for all sample transfers."]
+          },
+          { 
+            type: "Biological", 
+            description: "Aerosolization of pathogens during waste compaction.", 
+            severity: "Medium",
+            detailed_info: "Compacting moist clinical waste can release micro-droplets into the air, potentially bypassing standard mask protections if not properly contained.",
+            mitigation_strategies: ["Operate waste compactors only within negative-pressure enclosures.", "Use biological indicators to verify sterilization efficacy monthly."]
+          },
+          { 
+            type: "Chemical", 
+            description: "Exposure to disinfectants and sterilization chemicals.", 
+            severity: "Low",
+            detailed_info: "Daily use of concentrated glutaraldehyde or similar agents can cause chronic respiratory irritation and contact dermatitis over extended periods.",
+            mitigation_strategies: ["Maintain a minimum of 10 air changes per hour in the processing room.", "Enforce the use of elbow-length chemical-resistant gloves."]
+          }
         ],
         mitigations: [
           "Utilize puncture-resistant, leak-proof containers with automated sealing.",
@@ -192,8 +251,14 @@ const RiskAssessmentSection = () => {
       
       Please provide the report in a structured JSON format with the following keys:
       - "summary": A brief overview of the risk level.
-      - "hazards": An array of objects, each with "type" (e.g., Physical, Chemical, Biological), "description", "severity" (Low, Medium, High), and "immediate_action" (only for High severity hazards, otherwise null).
-      - "mitigations": An array of specific, actionable mitigation strategies.
+      - "hazards": An array of objects, each with:
+          - "type" (e.g., Physical, Chemical, Biological)
+          - "description": A concise description of the hazard.
+          - "severity" (Low, Medium, High).
+          - "immediate_action": Required for High severity hazards, otherwise null.
+          - "detailed_info": More detailed technical information about this specific hazard and its context.
+          - "mitigation_strategies": An array of 2-3 specific, actionable mitigation strategies relevant strictly to this specific hazard.
+      - "mitigations": An array of general, high-level mitigation strategies for the overall task.
       - "ppe_requirements": A list of required Personal Protective Equipment.
       - "regulatory_notes": Any relevant IEEE or safety standards that apply.`;
 
@@ -214,9 +279,11 @@ const RiskAssessmentSection = () => {
                     type: { type: Type.STRING },
                     description: { type: Type.STRING },
                     severity: { type: Type.STRING, enum: ["Low", "Medium", "High"] },
-                    immediate_action: { type: Type.STRING, nullable: true }
+                    immediate_action: { type: Type.STRING, nullable: true },
+                    detailed_info: { type: Type.STRING },
+                    mitigation_strategies: { type: Type.ARRAY, items: { type: Type.STRING } }
                   },
-                  required: ["type", "description", "severity"]
+                  required: ["type", "description", "severity", "detailed_info", "mitigation_strategies"]
                 }
               },
               mitigations: { type: Type.ARRAY, items: { type: Type.STRING } },
@@ -468,21 +535,57 @@ const RiskAssessmentSection = () => {
                               <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{hazard.description}</p>
                               
                               <AnimatePresence>
-                                {expandedHazardIndex === i && hazard.immediate_action && (
+                                {expandedHazardIndex === i && (
                                   <motion.div
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 'auto', opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
                                     className="overflow-hidden"
                                   >
-                                    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                      <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
-                                        <ShieldAlert size={12} />
-                                        Immediate Action
-                                      </div>
-                                      <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
-                                        {hazard.immediate_action}
-                                      </p>
+                                    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
+                                      {/* Immediate Action for High Severity */}
+                                      {hazard.immediate_action && (
+                                        <div>
+                                          <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
+                                            <ShieldAlert size={12} />
+                                            Immediate Action Required
+                                          </div>
+                                          <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
+                                            {hazard.immediate_action}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {/* Detailed Info for all (or especially non-high) */}
+                                      {hazard.detailed_info && (
+                                        <div>
+                                          <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+                                            <Info size={12} />
+                                            Detailed Context
+                                          </div>
+                                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic">
+                                            {hazard.detailed_info}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {/* Specific Mitigations */}
+                                      {hazard.mitigation_strategies && hazard.mitigation_strategies.length > 0 && (
+                                        <div>
+                                          <div className="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+                                            <CheckCircle size={12} />
+                                            Focused Mitigations
+                                          </div>
+                                          <ul className="space-y-1.5">
+                                            {hazard.mitigation_strategies.map((strategy: string, j: number) => (
+                                              <li key={j} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                                                <div className="w-1 h-1 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                                                <span>{strategy}</span>
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      )}
                                     </div>
                                   </motion.div>
                                 )}
@@ -538,7 +641,7 @@ const RiskAssessmentSection = () => {
                             Safety Verification Checklist
                             {!isPPEChecklistExpanded && (
                               <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/10 text-slate-400">
-                                {checkedPPEItems.length}/{report.ppe_requirements.length} items checked
+                                {checkedPPEItems.length}/{report.ppe_requirements.length} PPE items verified
                               </span>
                             )}
                           </span>
